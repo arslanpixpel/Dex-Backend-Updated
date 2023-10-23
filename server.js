@@ -27,11 +27,11 @@ mongoose
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    }
+    },
   )
   // eslint-disable-next-line no-console
   .then(() => console.log("MongoDB Connected"))
-  .catch((err) => {
+  .catch(err => {
     console.log("DB connection failed.", " error:", err);
     process.exit(1);
   });
@@ -79,7 +79,7 @@ setExchangesLoop(
       ],
     },
   },
-  cronOptions
+  cronOptions,
 );
 
 setBlocksStream();

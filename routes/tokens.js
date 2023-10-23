@@ -14,6 +14,7 @@ const {
   swaptransaction,
   handleTransactiontoken,
   createConcordiumClientfunc,
+  transectiontokens,
 } = require("../controllers/transectionController");
 
 router.get("/list", getTokens);
@@ -21,8 +22,8 @@ router.post("/add", postToken);
 router.post("/limit", limit);
 router.get("/getlimitorders", getLimitOrders);
 router.post("/compeletelimitorders", compeleteLimitOrders);
-router.post("/transection", transactionController);
+router.get("/transection", transactionController);
 router.post("/swap", handleswap);
-router.post("/tokenswap", handleTransactiontoken);
+router.post("/tokenswap", transectiontokens);
 router.get("/createConcordiumClient", createConcordiumClientfunc);
 module.exports = router;
