@@ -1,0 +1,28 @@
+const router = require("express").Router();
+const {
+  getTokens,
+  postToken,
+  limit,
+  getLimitOrders,
+  compeleteLimitOrders,
+} = require("../controllers/tokensController");
+const {
+  // buyToken,
+  // transection,
+  transactionController,
+  handleswap,
+  swaptransaction,
+  handleTransactiontoken,
+  createConcordiumClientfunc,
+} = require("../controllers/transectionController");
+
+router.get("/list", getTokens);
+router.post("/add", postToken);
+router.post("/limit", limit);
+router.get("/getlimitorders", getLimitOrders);
+router.post("/compeletelimitorders", compeleteLimitOrders);
+router.post("/transection", transactionController);
+router.post("/swap", handleswap);
+router.post("/tokenswap", handleTransactiontoken);
+router.get("/createConcordiumClient", createConcordiumClientfunc);
+module.exports = router;
