@@ -41,6 +41,7 @@ const {
 } = require("../config/main");
 const { PIXPEL_CONTRACT_METHODS } = require("../contract-models/config");
 const { getTokenRawAmount } = require("../utils/format");
+const LimitModel = require("../models/limitModel");
 
 const handleTransaction = async () => {
   // const client = createConcordiumClient();
@@ -48,19 +49,19 @@ const handleTransaction = async () => {
   const client = createConcordiumClient(
     "node.testnet.concordium.com",
     20000,
-    insecureCredentials
+    insecureCredentials,
   );
 
   const walletFile = fs.readFileSync(
     "./4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR.export",
     // "./3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U.export",
-    "utf8"
+    "utf8",
   );
   const walletExport = parseWallet(walletFile);
   const sender = new AccountAddress(walletExport.value.address);
 
   const toAddress = new AccountAddress(
-    "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U"
+    "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
     // "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR"
   );
 
@@ -90,7 +91,7 @@ const handleTransaction = async () => {
 
     const transactionHash = await client.sendAccountTransaction(
       accountTransaction,
-      signature
+      signature,
     );
 
     const status = await client.waitForTransactionFinalization(transactionHash);
@@ -210,22 +211,22 @@ const handleTransaction = async () => {
 //     throw new Error(`Error processing the transaction: ${error.message}`);
 //   }
 // };
-const handleTransactiontoken = async ({ a, b, amountFrom }) => {
+const handleTransactiontoken = async ({ a, b, c, _id }) => {
   try {
+    console.log({ a, b, c, _id, d: new CcdAmount(BigInt(`${`${c}`}`)) });
     const insecureCredentials = credentials.createInsecure();
     const client = createConcordiumClient(
       "node.testnet.concordium.com",
       20000,
-      insecureCredentials
+      insecureCredentials,
     );
-
-    console.log(amountFrom, "amountTo");
 
     const walletFile = fs.readFileSync(
-      // "./4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR.export",
-      "./3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U.export",
-      "utf8"
+      process.env.PRIVATE_KEY_PATH || "./4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR.export",
+      // "./3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U.export",
+      "utf8",
     );
+
     const walletExport = parseWallet(walletFile);
     const sender = new AccountAddress(walletExport.value.address);
 
@@ -239,10 +240,10 @@ const handleTransactiontoken = async ({ a, b, amountFrom }) => {
       "pixpel_swap",
       "ccdToTokenSwap",
       a,
-      PIXPEL_SWAP_CONTRACT_INFO.schemaBuffer
+      PIXPEL_SWAP_CONTRACT_INFO.schemaBuffer,
     );
     const tokenTransfer = {
-      amount: new CcdAmount(BigInt(amountFrom)),
+      amount: new CcdAmount(BigInt(`${c}`)),
       address: {
         index: 4350n,
         subindex: 0n,
@@ -262,124 +263,127 @@ const handleTransactiontoken = async ({ a, b, amountFrom }) => {
     const signature = await signTransaction(accountTransaction, signer);
     const transactionHash = await client.sendAccountTransaction(
       accountTransaction,
-      signature
+      signature,
     );
 
     const status = await client.waitForTransactionFinalization(transactionHash);
     console.log(status, "status");
 
-    const address = {
-      index: 4350n,
-      subindex: 0n,
-    };
-    const contract = await CIS2Contract.create(client, address);
-    console.log(contract, "contract");
+    // const address = {
+    //   index: 4350n,
+    //   subindex: 0n,
+    // };
+    // const contract = await CIS2Contract.create(client, address);
 
-    const txHash = await contract.transfer(
-      {
-        senderAddress: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
-        energy: BigInt("30000"),
-        // amount: BigInt("1"),
-      },
-      [
-        {
-          from: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
-          to: "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR",
-          tokenAmount: BigInt("1"),
-          amount: BigInt("1"),
-          tokenId: "6515644d7a6527176a10a689",
-          token_id: "6515644d7a6527176a10a689",
-        },
-      ],
-      // [
-      //   {
-      //     tokenId: "6514433ab34752ddb4dbefb2",
-      //     amount: BigInt("1"),
-      //     // from: {
-      //     //   Address: ["3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U"],
-      //     // },
-      //     // to: {
-      //     //   Address: ["4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR"],
-      //     // },
-      //     from: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
-      //     to: "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR",
-      //     data: [0],
-      //   },
-      // ],
-      signer
-      // {
-      //   token_id: "6514433ab34752ddb4dbefb2",
-      //   amount: BigInt("1"),
-      //   from: {
-      //     Address: ["3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U"],
-      //   },
-      //   to: {
-      //     Address: ["4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR"],
-      //   },
-      //   // from: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
-      //   // to: "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR",
-      //   data: [0],
-      // }
-    );
-
-    process.stdout.write("Waiting for transaction finalization");
-
-    const interval = setInterval(() => {
-      process.stdout.write(".");
-    }, 1000);
-
-    const blockHash = await client.waitForTransactionFinalization(
-      txHash,
-      60000
-    );
-    process.stdout.write("\n");
-
-    clearInterval(interval);
-    console.log("Transaction finalized in block with hash:", blockHash);
-
-    // const transaction = await handleTransaction();
-    // console.log(transaction, "Transactions");
-
-    // console.log(b);
-
-    // const parameter2 = serializeUpdateContractParameters(
-    //   "pixpel_swap",
-    //   "ccdToTokenSwap",
-    //   b,
-    //   PIXPEL_SWAP_CONTRACT_INFO.schemaBuffer
-    // );
-    // console.log(parameter2, "parameter2");
-
-    // const tokenTransfer2 = {
-    //   amount: new CcdAmount(BigInt(1)),
-    //   address: {
-    //     index: 4350n,
-    //     subindex: 0n,
+    // const txHash = await contract.transfer(
+    //   {
+    //     senderAddress: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
+    //     energy: BigInt("30000"),
+    //     // amount: BigInt("1"),
     //   },
-    //   receiveName: "pixpel_swap.transfer",
-    //   message: parameter2,
-    //   maxContractExecutionEnergy: BigInt("30000"),
-    // };
-    // console.log(tokenTransfer2, "tokenTransfer2");
-
-    // const accountTransaction2 = {
-    //   header,
-    //   payload: tokenTransfer2,
-    //   type: AccountTransactionType.Update,
-    // };
-    // console.log(accountTransaction2, "accountTransaction2");
-
-    // const signer2 = buildAccountSigner(walletExport);
-    // const signature2 = await signTransaction(accountTransaction2, signer2);
-    // const transactionHash2 = await client.sendAccountTransaction(
-    //   accountTransaction2,
-    //   signature2
+    //   [
+    //     {
+    //       from: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
+    //       to: "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR",
+    //       tokenAmount: BigInt("1"),
+    //       amount: BigInt("1"),
+    //       tokenId: "6515644d7a6527176a10a689",
+    //       token_id: "6515644d7a6527176a10a689",
+    //     },
+    //   ],
+    //   // [
+    //   //   {
+    //   //     tokenId: "6514433ab34752ddb4dbefb2",
+    //   //     amount: BigInt("1"),
+    //   //     // from: {
+    //   //     //   Address: ["3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U"],
+    //   //     // },
+    //   //     // to: {
+    //   //     //   Address: ["4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR"],
+    //   //     // },
+    //   //     from: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
+    //   //     to: "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR",
+    //   //     data: [0],
+    //   //   },
+    //   // ],
+    //   signer,
+    //   // {
+    //   //   token_id: "6514433ab34752ddb4dbefb2",
+    //   //   amount: BigInt("1"),
+    //   //   from: {
+    //   //     Address: ["3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U"],
+    //   //   },
+    //   //   to: {
+    //   //     Address: ["4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR"],
+    //   //   },
+    //   //   // from: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
+    //   //   // to: "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR",
+    //   //   data: [0],
+    //   // }
     // );
 
-    // const status2 = await client.waitForTransactionFinalization(
-    //   transactionHash2
+    // process.stdout.write("Waiting for transaction finalization");
+
+    // const interval = setInterval(() => {
+    //   process.stdout.write(".");
+    // }, 1000);
+
+    // const blockHash = await client.waitForTransactionFinalization(
+    //   txHash,
+    //   60000,
     // );
-    // console.log(status2, "status2");
+    // process.stdout.write("\n");
+
+    // clearInterval(interval);
+    // console.log("Transaction finalized in block with hash:", blockHash);
+
+    // // const transaction = await handleTransaction();
+    // // console.log(transaction, "Transactions");
+
+    // // console.log(b);
+    const parameter2 = serializeUpdateContractParameters(
+      "pixpel_swap",
+      "transfer",
+      b,
+      PIXPEL_SWAP_CONTRACT_INFO.schemaBuffer,
+    );
+
+    const tokenTransfer2 = {
+      amount: new CcdAmount(BigInt(`${c}`)),
+      address: {
+        index: 4350n,
+        subindex: 0n,
+      },
+      receiveName: "pixpel_swap.transfer",
+      message: parameter2,
+      maxContractExecutionEnergy: BigInt("30000"),
+    };
+    const nextNonce2 = await client.getNextAccountNonce(sender);
+    const header2 = {
+      expiry: new TransactionExpiry(new Date(Date.now() + 3600000)),
+      nonce: nextNonce2.nonce,
+      sender,
+    };
+    const accountTransaction2 = {
+      header: header2,
+      payload: tokenTransfer2,
+      type: AccountTransactionType.Update,
+    };
+
+    const signature2 = await signTransaction(accountTransaction2, signer);
+    console.log(accountTransaction2, "accountTransaction2");
+    const transactionHash2 = await client.sendAccountTransaction(
+      accountTransaction2,
+      signature2,
+    );
+    const status2 = await client.waitForTransactionFinalization(
+      transactionHash2,
+    );
+    console.log(status2, "status2");
+
+    if (!status2.summary.rejectReason) {
+      await LimitModel.updateOne({ _id }, { paid: true });
+    }
 
     return {
       hash: status.summary.hash,
@@ -389,7 +393,7 @@ const handleTransactiontoken = async ({ a, b, amountFrom }) => {
   }
 };
 
-const convertBigIntToString = (obj) => {
+const convertBigIntToString = obj => {
   for (const key in obj) {
     if (typeof obj[key] === "bigint") {
       obj[key] = `${obj[key].toString()}n`;
@@ -402,7 +406,6 @@ const convertBigIntToString = (obj) => {
 const transectiontokens = async (req, res) => {
   try {
     const status = await handleTransactiontoken(req.body);
-    console.log(status);
     res.status(200).send({ status });
   } catch (error) {
     // console.log(error);
@@ -448,7 +451,7 @@ const swapTokenToCcd = async ({
     account,
     PIXPEL_CONTRACT_ADDRESS,
     PIXPEL_CONTRACT_METHODS.tokenToCcdSwap,
-    MAX_ENERGY
+    MAX_ENERGY,
   );
 };
 
@@ -473,7 +476,7 @@ const swapCcdToToken = async ({
     PIXPEL_CONTRACT_ADDRESS,
     PIXPEL_CONTRACT_METHODS.ccdToTokenSwap,
     MAX_ENERGY,
-    amountFrom
+    amountFrom,
   );
 };
 
@@ -500,17 +503,17 @@ const swapTokenToToken = async ({
       purchased_token: { address: tokenTo.address, id: tokenTo.tokenId },
       token_sold: getTokenRawAmount(
         amountFrom,
-        tokenFrom.decimals || 6
+        tokenFrom.decimals || 6,
       ).toString(),
       min_purchased_token_amount: getTokenRawAmount(
         amountTo,
-        tokenTo.decimals || 6
+        tokenTo.decimals || 6,
       ).toString(),
     },
     account,
     PIXPEL_CONTRACT_ADDRESS,
     PIXPEL_CONTRACT_METHODS.tokenToTokenSwap,
-    MAX_ENERGY
+    MAX_ENERGY,
   );
 };
 
@@ -617,7 +620,7 @@ async function createConcordiumClientfunc(req, res) {
     const client = createConcordiumClient(
       "node.testnet.concordium.com",
       20000,
-      insecureCredentials
+      insecureCredentials,
     );
 
     const visitedObjects = new Set();

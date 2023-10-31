@@ -14,7 +14,9 @@ const LimitModel = mongoose.model(
     tokenFromindex: Schema.Types.Mixed,
     tokenFromid: Schema.Types.Mixed,
     tokenToid: Schema.Types.Mixed,
-  })
+    address: Schema.Types.Mixed,
+    paid: Schema.Types.Mixed,
+  }),
 );
 
 module.exports = LimitModel;
