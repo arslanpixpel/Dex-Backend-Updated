@@ -4,17 +4,11 @@ const {
   AccountAddress,
   TransactionExpiry,
   CcdAmount,
-  DataBlob,
   AccountTransactionType,
   buildAccountSigner,
   signTransaction,
-  ConcordiumGRPCClient,
   createConcordiumClient,
-  AccountTransaction,
-  TokenTransferPayload,
-  TokenTransfer,
   serializeUpdateContractParameters,
-  CIS2Contract,
 } = require("@concordium/node-sdk");
 // const {
 //   detectConcordiumProvider,
@@ -33,7 +27,10 @@ const { updateOperator } = require("../utils/operator");
 const {
   updateContract,
 } = require("../contract-models/ConcordiumContractClient");
-const { PIXPEL_SWAP_CONTRACT_INFO } = require("../smartcontract/contractsInfo");
+const {
+  PIXPEL_SWAP_CONTRACT_INFO,
+  CIS2_MULTI_CONTRACT_INFO,
+} = require("../smartcontract/contractsInfo");
 const {
   PIXPEL_CONTRACT_ADDRESS,
   MAX_ENERGY,
@@ -211,9 +208,8 @@ const handleTransaction = async () => {
 //     throw new Error(`Error processing the transaction: ${error.message}`);
 //   }
 // };
-const handleTransactiontoken = async ({ a, b, c, _id }) => {
+const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
   try {
-    console.log({ a, b, c, _id, d: new CcdAmount(BigInt(`${`${c}`}`)) });
     const insecureCredentials = credentials.createInsecure();
     const client = createConcordiumClient(
       "node.testnet.concordium.com",
@@ -222,7 +218,8 @@ const handleTransactiontoken = async ({ a, b, c, _id }) => {
     );
 
     const walletFile = fs.readFileSync(
-      process.env.PRIVATE_KEY_PATH || "./4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR.export",
+      process.env.PRIVATE_KEY_PATH ||
+        "./4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR.export",
       // "./3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U.export",
       "utf8",
     );
@@ -267,94 +264,21 @@ const handleTransactiontoken = async ({ a, b, c, _id }) => {
     );
 
     const status = await client.waitForTransactionFinalization(transactionHash);
-    console.log(status, "status");
 
-    // const address = {
-    //   index: 4350n,
-    //   subindex: 0n,
-    // };
-    // const contract = await CIS2Contract.create(client, address);
-
-    // const txHash = await contract.transfer(
-    //   {
-    //     senderAddress: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
-    //     energy: BigInt("30000"),
-    //     // amount: BigInt("1"),
-    //   },
-    //   [
-    //     {
-    //       from: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
-    //       to: "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR",
-    //       tokenAmount: BigInt("1"),
-    //       amount: BigInt("1"),
-    //       tokenId: "6515644d7a6527176a10a689",
-    //       token_id: "6515644d7a6527176a10a689",
-    //     },
-    //   ],
-    //   // [
-    //   //   {
-    //   //     tokenId: "6514433ab34752ddb4dbefb2",
-    //   //     amount: BigInt("1"),
-    //   //     // from: {
-    //   //     //   Address: ["3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U"],
-    //   //     // },
-    //   //     // to: {
-    //   //     //   Address: ["4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR"],
-    //   //     // },
-    //   //     from: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
-    //   //     to: "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR",
-    //   //     data: [0],
-    //   //   },
-    //   // ],
-    //   signer,
-    //   // {
-    //   //   token_id: "6514433ab34752ddb4dbefb2",
-    //   //   amount: BigInt("1"),
-    //   //   from: {
-    //   //     Address: ["3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U"],
-    //   //   },
-    //   //   to: {
-    //   //     Address: ["4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR"],
-    //   //   },
-    //   //   // from: "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
-    //   //   // to: "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR",
-    //   //   data: [0],
-    //   // }
-    // );
-
-    // process.stdout.write("Waiting for transaction finalization");
-
-    // const interval = setInterval(() => {
-    //   process.stdout.write(".");
-    // }, 1000);
-
-    // const blockHash = await client.waitForTransactionFinalization(
-    //   txHash,
-    //   60000,
-    // );
-    // process.stdout.write("\n");
-
-    // clearInterval(interval);
-    // console.log("Transaction finalized in block with hash:", blockHash);
-
-    // // const transaction = await handleTransaction();
-    // // console.log(transaction, "Transactions");
-
-    // // console.log(b);
     const parameter2 = serializeUpdateContractParameters(
-      "pixpel_swap",
+      d.contractName,
       "transfer",
       b,
-      PIXPEL_SWAP_CONTRACT_INFO.schemaBuffer,
+      CIS2_MULTI_CONTRACT_INFO.schemaBuffer,
     );
 
     const tokenTransfer2 = {
-      amount: new CcdAmount(BigInt(`${c}`)),
+      amount: new CcdAmount(BigInt(`1`), 6),
       address: {
-        index: 4350n,
+        index: BigInt(d.address.index),
         subindex: 0n,
       },
-      receiveName: "pixpel_swap.transfer",
+      receiveName: `${d.contractName}.transfer`,
       message: parameter2,
       maxContractExecutionEnergy: BigInt("30000"),
     };
@@ -369,9 +293,7 @@ const handleTransactiontoken = async ({ a, b, c, _id }) => {
       payload: tokenTransfer2,
       type: AccountTransactionType.Update,
     };
-
     const signature2 = await signTransaction(accountTransaction2, signer);
-    console.log(accountTransaction2, "accountTransaction2");
     const transactionHash2 = await client.sendAccountTransaction(
       accountTransaction2,
       signature2,
@@ -379,6 +301,7 @@ const handleTransactiontoken = async ({ a, b, c, _id }) => {
     const status2 = await client.waitForTransactionFinalization(
       transactionHash2,
     );
+
     console.log(status2, "status2");
 
     if (!status2.summary.rejectReason) {
@@ -640,8 +563,6 @@ async function createConcordiumClientfunc(req, res) {
     // console.log(jsonString, "stringobj");
     res.json({ jsonString });
   } catch (error) {
-    console.error(error);
-
     return null;
   }
 }

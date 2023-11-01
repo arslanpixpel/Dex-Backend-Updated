@@ -124,6 +124,7 @@ const getMetadataLink = async (contract, method = "tokenMetadata") => {
       message: "Contract Index not found",
     };
   }
+  console.log(instanceInfo);
   const instanceInfoMethod = instanceInfo.methods.find((instanceMethod) =>
     instanceMethod.includes(method)
   );
