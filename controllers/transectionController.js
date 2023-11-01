@@ -46,19 +46,19 @@ const handleTransaction = async () => {
   const client = createConcordiumClient(
     "node.testnet.concordium.com",
     20000,
-    insecureCredentials
+    insecureCredentials,
   );
 
   const walletFile = fs.readFileSync(
     "./4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR.export",
     // "./3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U.export",
-    "utf8"
+    "utf8",
   );
   const walletExport = parseWallet(walletFile);
   const sender = new AccountAddress(walletExport.value.address);
 
   const toAddress = new AccountAddress(
-    "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U"
+    "3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U",
     // "4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR"
   );
 
@@ -88,7 +88,7 @@ const handleTransaction = async () => {
 
     const transactionHash = await client.sendAccountTransaction(
       accountTransaction,
-      signature
+      signature,
     );
 
     const status = await client.waitForTransactionFinalization(transactionHash);
@@ -214,14 +214,14 @@ const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
     const client = createConcordiumClient(
       "node.testnet.concordium.com",
       20000,
-      insecureCredentials
+      insecureCredentials,
     );
 
     const walletFile = fs.readFileSync(
       process.env.PRIVATE_KEY_PATH ||
         // "./4D3RtGf7zbg7JtBrrsjXVuTMCNgDcnr5M1TKpXqTTBtHENTWtR.export",
         "./3NQJpBY6L8FofGLxo37w2taX3R8apCRmK7eQnbZK3EBnvoew1U.export",
-      "utf8"
+      "utf8",
     );
 
     const walletExport = parseWallet(walletFile);
@@ -237,7 +237,7 @@ const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
       "pixpel_swap",
       "ccdToTokenSwap",
       a,
-      PIXPEL_SWAP_CONTRACT_INFO.schemaBuffer
+      PIXPEL_SWAP_CONTRACT_INFO.schemaBuffer,
     );
     const tokenTransfer = {
       amount: new CcdAmount(BigInt(`${c}`)),
@@ -260,7 +260,7 @@ const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
     const signature = await signTransaction(accountTransaction, signer);
     const transactionHash = await client.sendAccountTransaction(
       accountTransaction,
-      signature
+      signature,
     );
 
     const status = await client.waitForTransactionFinalization(transactionHash);
@@ -270,14 +270,14 @@ const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
           index: BigInt(d.address.index),
           subindex: 0n,
         })
-      ).sourceModule
+      ).sourceModule,
     );
-    console.log(Schema, "Schema");
+    console.log(Schema.toJSON(), "Schema");
     const parameter2 = serializeUpdateContractParameters(
       d.contractName,
       "transfer",
       b,
-      Schema
+      Schema,
     );
     console.log(parameter2, "parameter2");
 
@@ -306,10 +306,10 @@ const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
     const signature2 = await signTransaction(accountTransaction2, signer);
     const transactionHash2 = await client.sendAccountTransaction(
       accountTransaction2,
-      signature2
+      signature2,
     );
     const status2 = await client.waitForTransactionFinalization(
-      transactionHash2
+      transactionHash2,
     );
 
     console.log(status2, "status2");
@@ -319,14 +319,14 @@ const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
     }
 
     return {
-      hash: "status.summary.hash",
+      hash: status.summary.hash,
     };
   } catch (error) {
     throw new Error(`Error processing the transaction: ${error.message}`);
   }
 };
 
-const convertBigIntToString = (obj) => {
+const convertBigIntToString = obj => {
   for (const key in obj) {
     if (typeof obj[key] === "bigint") {
       obj[key] = `${obj[key].toString()}n`;
@@ -384,7 +384,7 @@ const swapTokenToCcd = async ({
     account,
     PIXPEL_CONTRACT_ADDRESS,
     PIXPEL_CONTRACT_METHODS.tokenToCcdSwap,
-    MAX_ENERGY
+    MAX_ENERGY,
   );
 };
 
@@ -409,7 +409,7 @@ const swapCcdToToken = async ({
     PIXPEL_CONTRACT_ADDRESS,
     PIXPEL_CONTRACT_METHODS.ccdToTokenSwap,
     MAX_ENERGY,
-    amountFrom
+    amountFrom,
   );
 };
 
@@ -436,17 +436,17 @@ const swapTokenToToken = async ({
       purchased_token: { address: tokenTo.address, id: tokenTo.tokenId },
       token_sold: getTokenRawAmount(
         amountFrom,
-        tokenFrom.decimals || 6
+        tokenFrom.decimals || 6,
       ).toString(),
       min_purchased_token_amount: getTokenRawAmount(
         amountTo,
-        tokenTo.decimals || 6
+        tokenTo.decimals || 6,
       ).toString(),
     },
     account,
     PIXPEL_CONTRACT_ADDRESS,
     PIXPEL_CONTRACT_METHODS.tokenToTokenSwap,
-    MAX_ENERGY
+    MAX_ENERGY,
   );
 };
 
@@ -553,7 +553,7 @@ async function createConcordiumClientfunc(req, res) {
     const client = createConcordiumClient(
       "node.testnet.concordium.com",
       20000,
-      insecureCredentials
+      insecureCredentials,
     );
 
     const visitedObjects = new Set();
