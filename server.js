@@ -68,6 +68,10 @@ app.use(invalidPathHandler);
 app.listen(port, () => {
   console.log(`Running pixpel-backend-js API on port ${port}`);
 });
+app.all("/", (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 
 setExchangesLoop(
   PIXPEL_SWAP,
