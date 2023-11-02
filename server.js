@@ -18,7 +18,7 @@ const dbHost = process.env.DBHOST;
 const dbName = process.env.DBNAME;
 const cronOptions = process.env.CRON_OPTIONS;
 const app = express();
-app.use(cors({ origin: "*" }));
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 mongoose
@@ -67,10 +67,6 @@ app.use(errorResponder);
 app.use(invalidPathHandler);
 app.listen(port, () => {
   console.log(`Running pixpel-backend-js API on port ${port}`);
-});
-app.all("/", (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
 });
 
 setExchangesLoop(
