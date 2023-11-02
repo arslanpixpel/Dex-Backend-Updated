@@ -5,7 +5,7 @@ const LimitModel = require("../models/limitModel");
 
 const Token = require("../models/tokenModel");
 
-const findTokenData = async contract => {
+const findTokenData = async (contract) => {
   const { index, subindex, tokenId } = contract;
   const result = await Token.findOne({
     contractIndex: index,
@@ -16,7 +16,7 @@ const findTokenData = async contract => {
   return result;
 };
 
-const createJson = token => {
+const createJson = (token) => {
   const {
     _id,
     contractIndex,
@@ -44,9 +44,9 @@ const createJson = token => {
   };
 };
 
-const isHEX = string => /^[0-9A-F]+$/i.test(string);
+const isHEX = (string) => /^[0-9A-F]+$/i.test(string);
 
-const validateContract = contract => {
+const validateContract = (contract) => {
   const { index, tokenId } = contract;
 
   switch (true) {
@@ -73,7 +73,7 @@ const validateContract = contract => {
   }
 };
 
-const isContractExistsInDB = async contract => {
+const isContractExistsInDB = async (contract) => {
   const result = await findTokenData(contract);
 
   if (result) {
@@ -133,7 +133,7 @@ const updateToken = async (contract, from = "") => {
           tokenId: contract.tokenId.toUpperCase(),
           contractName,
           metadata,
-        },
+        }
       );
     }
   } catch (error) {
@@ -150,7 +150,7 @@ const getAllTokensFromDB = async () => {
 const getTokens = async (req, res) => {
   try {
     const tokensData = await Token.find();
-    const response = tokensData.map(token => createJson(token));
+    const response = tokensData.map((token) => createJson(token));
     res.status(200).json({
       response,
     });
@@ -207,7 +207,7 @@ const postToken = async (req, res) => {
 
     if (!isTokenExists) {
       consoleHeader(
-        `Add contract!!! From: User is request to add new contract in DB`,
+        `Add contract!!! From: User is request to add new contract in DB`
       );
       console.dir(contract, { depth: null });
       await Token.create({
@@ -219,7 +219,7 @@ const postToken = async (req, res) => {
       });
     } else {
       consoleHeader(
-        `Update contract!!! From: User is request exist contract in DB`,
+        `Update contract!!! From: User is request exist contract in DB`
       );
       console.dir(contract, { depth: null });
       await Token.replaceOne(
@@ -234,7 +234,7 @@ const postToken = async (req, res) => {
           tokenId: contract.tokenId.toUpperCase(),
           contractName,
           metadata,
-        },
+        }
       );
 
       return res.status(400).json({
@@ -307,15 +307,25 @@ const compeleteLimitOrders = async (req, res) => {
     const limitOrders = await getLimitOrders();
 
     const filteredOrders = limitOrders.filter(
-      order =>
+      (order) =>
         order.tokenToindex === tokentoindex &&
-        order.tokenFromindex === tokenfromindex,
+        order.tokenFromindex === tokenfromindex
     );
 
     res.json({ requestBody: req.body, filteredOrders });
   } catch (error) {
     console.error("Error fetching LimitOrders:", error);
     res.status(500).json({ error: "Unable to fetch LimitOrders" });
+  }
+};
+
+const hello = async (req, res) => {
+  try {
+    res.send("Hello");
+    // return "Hello";
+    // eslint-disable-next-line no-unreachable
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -328,4 +338,5 @@ module.exports = {
   limit,
   getLimitOrders,
   compeleteLimitOrders,
+  hello,
 };
