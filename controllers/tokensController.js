@@ -292,11 +292,26 @@ const limit = async (req, res) => {
 const getLimitOrders = async (req, res) => {
   try {
     const limitOrders = await LimitModel.find({});
-
-    return limitOrders;
+    res.json(limitOrders);
   } catch (error) {
     console.error("Error fetching LimitOrders:", error);
     res.status(500).json({ error: "Unable to fetch LimitOrders" });
+  }
+};
+
+const getLimitOrdersbywallet = async (req, res) => {
+  try {
+    const { walletAddress } = req.body;
+
+    if (!walletAddress) {
+      return res.status(400).json({ error: "Wallet address is required" });
+    }
+
+    const limitOrders = await LimitModel.find({ address: walletAddress });
+    res.json(limitOrders);
+  } catch (error) {
+    console.error("Error fetching Limit Orders:", error);
+    res.status(500).json({ error: "Unable to fetch Limit Orders" });
   }
 };
 
@@ -339,4 +354,5 @@ module.exports = {
   getLimitOrders,
   compeleteLimitOrders,
   hello,
+  getLimitOrdersbywallet,
 };
