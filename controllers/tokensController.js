@@ -320,7 +320,6 @@ const compeleteLimitOrders = async (req, res) => {
 
   try {
     const limitOrders = await getLimitOrders();
-    console.log(limitOrders, "limitorders");
     const filteredOrders = limitOrders.filter(
       (order) =>
         order.tokenToindex === tokentoindex &&
