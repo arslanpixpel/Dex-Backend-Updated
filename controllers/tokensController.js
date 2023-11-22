@@ -292,7 +292,8 @@ const limit = async (req, res) => {
 const getLimitOrders = async (req, res) => {
   try {
     const limitOrders = await LimitModel.find({});
-    res.json(limitOrders);
+
+    return limitOrders;
   } catch (error) {
     console.error("Error fetching LimitOrders:", error);
     res.status(500).json({ error: "Unable to fetch LimitOrders" });
@@ -319,7 +320,7 @@ const compeleteLimitOrders = async (req, res) => {
 
   try {
     const limitOrders = await getLimitOrders();
-
+    console.log(limitOrders, "limitorders");
     const filteredOrders = limitOrders.filter(
       (order) =>
         order.tokenToindex === tokentoindex &&
