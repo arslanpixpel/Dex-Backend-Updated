@@ -306,7 +306,6 @@ const getLimitOrdersbywallet = async (req, res) => {
     if (!walletAddress) {
       return res.status(400).json({ error: "Wallet address is required" });
     }
-
     const limitOrders = await LimitModel.find({ address: walletAddress });
     res.json(limitOrders);
   } catch (error) {

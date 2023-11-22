@@ -23,7 +23,7 @@ router.get("/list", getTokens);
 router.post("/add", postToken);
 router.post("/limit", limit);
 router.get("/getlimitorders", getLimitOrders);
-router.get("/getlimitordersbywallet", getLimitOrdersbywallet);
+router.post("/getlimitordersbywallet", getLimitOrdersbywallet);
 router.post("/compeletelimitorders", compeleteLimitOrders);
 router.get("/transection", transactionController);
 router.post("/swap", handleswap);
