@@ -609,7 +609,7 @@ async function transactionToWallet(req, res) {
     };
 
     const simpleTransfer = {
-      amount: new CcdAmount(BigInt(amount)),
+      amount: new CcdAmount(BigInt(amount).toString()),
       toAddress,
     };
 
