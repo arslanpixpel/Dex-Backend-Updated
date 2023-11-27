@@ -630,9 +630,9 @@ async function transactionToWallet(req, res) {
     );
 
     const status = await client.waitForTransactionFinalization(transactionHash);
-    // console.log(status, "status");
+    const responce = convertBigIntToString(status);
 
-    res.json({ status: status.toString() });
+    res.status(200).send({ responce });
   } catch (error) {
     throw new Error(`Error processing the transaction: ${error.message}`);
   }

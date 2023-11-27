@@ -38,21 +38,14 @@ exports.saveUserExchange = async (req, res, next) => {
 
 exports.updateUserExchange = async (req, res, next) => {
   try {
-    const updatedExchanges = req.body;
+    const exchanges = req.body;
+    await Exchange.deleteMany({});
 
-    for (const updatedExchange of updatedExchanges) {
-      console.log(updatedExchange, "updatedExchanges");
-      // eslint-disable-next-line no-underscore-dangle
-      //const filter = { _id: updatedExchange._id };
-      const update = { $set: updatedExchange };
-      const options = { new: true, upsert: true };
+    const newUser = new Exchange({ exchanges });
 
-      // eslint-disable-next-line no-await-in-loop
-      const reso = await Exchange.findOneAndUpdate(update, options);
-      console.log(reso, "res");
-    }
+    await newUser.save();
 
-    res.status(200).json({ message: "User data updated successfully" });
+    res.status(201).json({ message: "User data saved successfully", newUser });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
