@@ -632,7 +632,7 @@ async function transactionToWallet(req, res) {
     const status = await client.waitForTransactionFinalization(transactionHash);
     // console.log(status, "status");
 
-    return status;
+    res.json({ status });
   } catch (error) {
     throw new Error(`Error processing the transaction: ${error.message}`);
   }
