@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 const chartDataSchema = new Schema({
@@ -25,5 +25,34 @@ const chartDataSchema = new Schema({
     type: String,
   },
 });
-const ChartData = mongoose.model('chartData', chartDataSchema);
+const ChartData = mongoose.model("chartData", chartDataSchema);
 module.exports = ChartData;
+
+const exchangeSchema = new Schema({
+  exchanges: [
+    {
+      lpTokenId: {
+        type: String,
+        required: true,
+      },
+      lpTokensHolderBalance: {
+        type: String,
+        required: true,
+      },
+      lpTokensSupply: {
+        type: String,
+        required: true,
+      },
+      token: {
+        address: {
+          type: String,
+          required: true,
+        },
+        id: String,
+      },
+    },
+  ],
+});
+
+const Exchange = mongoose.model("exchange", exchangeSchema);
+module.exports = Exchange;
