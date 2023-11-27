@@ -24,7 +24,6 @@ exports.getExchanges = async (req, res, next) => {
 exports.saveUserExchange = async (req, res, next) => {
   try {
     const exchanges = req.body;
-    console.log(exchanges, "exchange");
 
     const newUser = new Exchange({ exchanges });
 
@@ -42,13 +41,14 @@ exports.updateUserExchange = async (req, res, next) => {
     const updatedExchanges = req.body;
 
     for (const updatedExchange of updatedExchanges) {
+      console.log(updatedExchange, "updatedExchanges");
       // eslint-disable-next-line no-underscore-dangle
-      const filter = { _id: updatedExchange._id };
+      //const filter = { _id: updatedExchange._id };
       const update = { $set: updatedExchange };
       const options = { new: true, upsert: true };
 
       // eslint-disable-next-line no-await-in-loop
-      const reso = await Exchange.findOneAndUpdate(filter, update, options);
+      const reso = await Exchange.findOneAndUpdate(update, options);
       console.log(reso, "res");
     }
 

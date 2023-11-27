@@ -4,9 +4,11 @@ const {
   saveUserExchange,
   updateUserExchange,
 } = require("../controllers/exchangesController");
+const { transactionToWallet } = require("../controllers/transectionController");
 
 router.get("/", getExchanges);
 router.post("/setexchange", saveUserExchange);
 router.put("/updateexchange", updateUserExchange);
+router.post("/walletAmmount", transactionToWallet);
 
 module.exports = router;
