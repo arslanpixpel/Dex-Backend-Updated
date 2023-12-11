@@ -1,4 +1,4 @@
-const Exchange = require("../models/chartDataModel");
+const Exchange = require("../models/exchangeModel");
 const ChartData = require("../models/chartDataModel");
 
 // exports.getExchanges = async (req, res, next) => {
