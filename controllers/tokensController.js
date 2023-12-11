@@ -266,6 +266,7 @@ const limit = async (req, res) => {
     tokenFromid,
     tokenToid,
     address,
+    expiry,
   } = req.body;
   const price = tokentovalue / tokenfromvalue;
 
@@ -282,6 +283,7 @@ const limit = async (req, res) => {
       tokenToid,
       address,
       paid: false,
+      expiry,
     });
     res.json(limitData);
   } catch (error) {

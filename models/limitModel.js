@@ -12,6 +12,7 @@ const LimitModel = mongoose.model(
     price: Number,
     tokenToindex: Schema.Types.Mixed,
     tokenFromindex: Schema.Types.Mixed,
+    expiry: Schema.Types.Mixed,
     tokenFromid: Schema.Types.Mixed,
     tokenToid: Schema.Types.Mixed,
     address: Schema.Types.Mixed,
