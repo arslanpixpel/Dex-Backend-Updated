@@ -1,35 +1,35 @@
-const moment = require('moment');
-const ChartData = require('../models/chartDataModel');
+const moment = require("moment");
+const ChartData = require("../models/chartDataModel");
 
 const findChartData = async (dateFrom, dateTo, pair) => {
   const startDate = moment(dateFrom).format();
   const finishDate = moment(dateTo).format();
 
   if (!pair) {
-    const result = await ChartData.find({
-      createdAt: {
-        $gt: startDate,
-        $lte: finishDate,
-      },
-    }).exec();
+    const result = await ChartData.find({}).exec();
 
-    return result;
+    return result.filter(
+      (exchange) =>
+        new Date(exchange.createdAt).getTime() >=
+          new Date(startDate).getTime() &&
+        new Date(exchange.createdAt).getTime() <= new Date(finishDate).getTime()
+    );
   }
 
   const result = await ChartData.find({
-    createdAt: {
-      $gt: startDate,
-      $lte: finishDate,
-    },
     tokenIndex: pair.tokenIndex,
     tokenSubindex: pair.tokenSubindex,
     tokenId: pair.tokenId,
   }).exec();
 
-  return result;
+  return result.filter(
+    (exchange) =>
+      new Date(exchange.createdAt).getTime() >= new Date(startDate).getTime() &&
+      new Date(exchange.createdAt).getTime() <= new Date(finishDate).getTime()
+  );
 };
 
-exports.addChartData = async exchange => {
+exports.addChartData = async (exchange) => {
   const {
     ccdBalance,
     token: {
@@ -64,7 +64,7 @@ exports.postChartData = async (req, res) => {
     }
   }
 
-  if (typeof pairFrom === 'object' && typeof pairTo === 'object') {
+  if (typeof pairFrom === "object" && typeof pairTo === "object") {
     if (pairFrom.tokenIndex === pairTo.tokenIndex) {
       return res.status(400).json({
         message: "tokenIndex 'From' should'n be the same as tokenIndex 'To'",
@@ -77,12 +77,12 @@ exports.postChartData = async (req, res) => {
 
       if (exchangesFrom.length && exchangesTo.length) {
         const chartData = exchangesFrom
-          .map(exchangeFrom => {
+          .map((exchangeFrom) => {
             const exchangeRateFrom = +exchangeFrom.ccdBalance
               ? exchangeFrom.tokenBalance / exchangeFrom.ccdBalance
               : 0;
             const exchangeTo = exchangesTo.find(
-              exchange => exchange.createdAt === exchangeFrom.createdAt,
+              (exchange) => exchange.createdAt === exchangeFrom.createdAt
             );
 
             if (!exchangeTo) {
@@ -98,7 +98,7 @@ exports.postChartData = async (req, res) => {
 
             return { createdAt: exchangeFrom.createdAt, exchangeRate };
           })
-          .filter(data => data !== undefined);
+          .filter((data) => data !== undefined);
 
         return res.status(200).json({ chartData });
       }
@@ -111,12 +111,12 @@ exports.postChartData = async (req, res) => {
     }
   }
 
-  if (pairFrom === 'CCD' && typeof pairTo === 'object') {
+  if (pairFrom === "CCD" && typeof pairTo === "object") {
     try {
       const exchanges = await findChartData(dateFrom, dateTo, pairTo);
 
       if (exchanges.length) {
-        const chartData = exchanges.map(exchange => {
+        const chartData = exchanges.map((exchange) => {
           const exchangeRate = +exchange.tokenBalance
             ? (exchange.ccdBalance / exchange.tokenBalance).toFixed(6)
             : 0;
@@ -135,12 +135,12 @@ exports.postChartData = async (req, res) => {
     }
   }
 
-  if (typeof pairFrom === 'object' && pairTo === 'CCD') {
+  if (typeof pairFrom === "object" && pairTo === "CCD") {
     try {
       const exchanges = await findChartData(dateFrom, dateTo, pairFrom);
 
       if (exchanges.length) {
-        const chartData = exchanges.map(exchange => {
+        const chartData = exchanges.map((exchange) => {
           const exchangeRate = +exchange.ccdBalance
             ? (exchange.tokenBalance / exchange.ccdBalance).toFixed(6)
             : 0;
@@ -160,6 +160,6 @@ exports.postChartData = async (req, res) => {
   }
 
   res.status(400).json({
-    message: 'Not valid data',
+    message: "Not valid data",
   });
 };
