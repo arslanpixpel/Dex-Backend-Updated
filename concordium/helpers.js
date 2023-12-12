@@ -14,14 +14,14 @@ const getClient = async () =>
   createConcordiumClient(
     process.env.CONCORDIUM_NODE,
     process.env.CONCORDIUM_PORT,
-    credentials.createInsecure()
+    credentials.createInsecure(),
   );
 
-const consoleHeader = (str) => {
+const consoleHeader = str => {
   console.log("");
   console.log(`\x1b[38;5;37m--> ${str}`);
   console.log(
-    "\x1b[38;5;37m---------------------------------------------------------------------------------------"
+    "\x1b[38;5;37m---------------------------------------------------------------------------------------",
   );
 };
 
@@ -30,7 +30,7 @@ const invokeContract = async (
   method,
   params = null,
   verbose = false,
-  silent = false
+  silent = false,
 ) => {
   if (!silent) {
     consoleHeader(`Invoke contract: ${contract.name} / ${method}`);
@@ -45,7 +45,7 @@ const invokeContract = async (
         method,
         params,
         Buffer.from(fs.readFileSync(contract.schema_path)),
-        SchemaVersion.V2
+        SchemaVersion.V2,
       )
     : null;
 
@@ -62,11 +62,11 @@ const invokeContract = async (
       },
       method: `${contract.contract_name}.${method}`,
       parameter: message,
-      energy: 30000n,
+      energy: 300000n,
     },
     (
       await client.getConsensusStatus()
-    ).bestBlock
+    ).bestBlock,
   );
 
   if (verbose) {
@@ -80,7 +80,7 @@ const invokeContract = async (
         Buffer.from(result.returnValue, "hex"),
         Buffer.from(fs.readFileSync(contract.schema_path)),
         contract.contract_name,
-        method
+        method,
       );
 
       if (!silent) {
@@ -96,7 +96,7 @@ const invokeContract = async (
         Buffer.from(result.returnValue, "hex"),
         Buffer.from(fs.readFileSync(contract.schema_path)),
         contract.contract_name,
-        method
+        method,
       );
       console.log("\nFailure: ");
       console.dir(returnValue, { depth: null });
@@ -125,8 +125,8 @@ const getMetadataLink = async (contract, method = "tokenMetadata") => {
     };
   }
   console.log(instanceInfo);
-  const instanceInfoMethod = instanceInfo.methods.find((instanceMethod) =>
-    instanceMethod.includes(method)
+  const instanceInfoMethod = instanceInfo.methods.find(instanceMethod =>
+    instanceMethod.includes(method),
   );
 
   if (!instanceInfoMethod) {
@@ -141,7 +141,7 @@ const getMetadataLink = async (contract, method = "tokenMetadata") => {
   const constractIdBuffer = Buffer.from(contract.tokenId, "hex");
   const contractIdLengthBuffer = Buffer.from(
     `0${String(constractIdBuffer.length)}`,
-    "hex"
+    "hex",
   );
   const totalBufferLength =
     numberOfQueriesBuffer.length +
@@ -149,7 +149,7 @@ const getMetadataLink = async (contract, method = "tokenMetadata") => {
     contractIdLengthBuffer.length;
   const totalBuffer = Buffer.concat(
     [numberOfQueriesBuffer, contractIdLengthBuffer, constractIdBuffer],
-    totalBufferLength
+    totalBufferLength,
   );
 
   // const result = await client.invokeContract(

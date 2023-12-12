@@ -1,8 +1,5 @@
-const { ToadScheduler, AsyncTask, CronJob } = require("toad-scheduler");
 const { invokeContract } = require("./helpers");
 const { updateTokensMetadataInDb, sendExchangesToDb } = require("./utils");
-
-let id = 0;
 
 const setExchangesLoop = async (
   contract,
@@ -10,29 +7,14 @@ const setExchangesLoop = async (
   params,
   cronOptions,
   verbose = false,
-  silent = true,
+  silent = true
 ) => {
-  const scheduler = new ToadScheduler();
-  const task = new AsyncTask("getExchanges", () =>
-    invokeContract(contract, method, params, verbose, silent).then(data => {
-      console.log(data);
+  setInterval(() => {
+    invokeContract(contract, method, params, verbose, silent).then((data) => {
       sendExchangesToDb(data.exchanges);
       updateTokensMetadataInDb(data.exchanges, "Exchanges list every 1 hour");
-    }),
-  );
-  const job = new CronJob(
-    {
-      cronExpression: cronOptions,
-    },
-    task,
-    {
-      preventOverrun: true,
-      id: `id_${id}`,
-    },
-  );
-  scheduler.addCronJob(job);
-  scheduler.getById(`id_${id}`).start();
-  id++;
+    });
+  }, Number(cronOptions));
 };
 
 module.exports = {
