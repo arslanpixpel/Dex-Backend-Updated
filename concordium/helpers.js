@@ -17,14 +17,6 @@ const getClient = async () =>
     credentials.createInsecure(),
   );
 
-const consoleHeader = str => {
-  console.log("");
-  console.log(`\x1b[38;5;37m--> ${str}`);
-  console.log(
-    "\x1b[38;5;37m---------------------------------------------------------------------------------------",
-  );
-};
-
 const invokeContract = async (
   contract,
   method,
@@ -32,12 +24,6 @@ const invokeContract = async (
   verbose = false,
   silent = false,
 ) => {
-  if (!silent) {
-    consoleHeader(`Invoke contract: ${contract.name} / ${method}`);
-    console.log("Params: ");
-    console.dir(params, { depth: null });
-  }
-
   const client = await getClient();
   const message = params
     ? serializeUpdateContractParameters(
@@ -48,11 +34,6 @@ const invokeContract = async (
         SchemaVersion.V2,
       )
     : null;
-
-  if (verbose && params) {
-    console.log("\nMessage: ");
-    console.log(message ? message.toJSON() : null);
-  }
 
   const result = await client.invokeContract(
     {
@@ -68,12 +49,6 @@ const invokeContract = async (
       await client.getConsensusStatus()
     ).bestBlock,
   );
-
-  if (verbose) {
-    console.log("\nResult: ");
-    console.dir(result, { depth: null });
-  }
-
   try {
     if (result.tag === "success" && result.returnValue) {
       const returnValue = deserializeReceiveReturnValue(
@@ -82,11 +57,6 @@ const invokeContract = async (
         contract.contract_name,
         method,
       );
-
-      if (!silent) {
-        console.log("\nResult: ");
-        console.dir(returnValue, { depth: null });
-      }
 
       return returnValue;
     }
@@ -98,13 +68,10 @@ const invokeContract = async (
         contract.contract_name,
         method,
       );
-      console.log("\nFailure: ");
-      console.dir(returnValue, { depth: null });
 
       return returnValue;
     }
   } catch (e) {
-    console.log("\nError: ");
     console.error(e);
   }
 };
@@ -124,7 +91,6 @@ const getMetadataLink = async (contract, method = "tokenMetadata") => {
       message: "Contract Index not found",
     };
   }
-  console.log(instanceInfo);
   const instanceInfoMethod = instanceInfo.methods.find(instanceMethod =>
     instanceMethod.includes(method),
   );
@@ -198,5 +164,4 @@ module.exports = {
   invokeContract,
   getMetadataLink,
   getClient,
-  consoleHeader,
 };

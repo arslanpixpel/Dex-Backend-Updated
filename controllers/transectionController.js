@@ -82,8 +82,6 @@ const handleTransaction = async () => {
     };
 
     const signer = buildAccountSigner(walletExport);
-    // console.log(accountTransaction, "accountTransaction");
-    // console.log(signer, "signer");
     const signature = await signTransaction(accountTransaction, signer);
 
     const transactionHash = await client.sendAccountTransaction(
@@ -92,7 +90,6 @@ const handleTransaction = async () => {
     );
 
     const status = await client.waitForTransactionFinalization(transactionHash);
-    // console.log(status, "status");
 
     return status;
   } catch (error) {
@@ -144,8 +141,6 @@ const handleTransaction = async () => {
 
 // const handleTransactiontoken = async () => {
 //   // const client = createConcordiumClient();
-//   // console.log(tokenData, "tokenDataFromPayload");
-//   // console.log(tokenamount, "tokenamountFromPayload");
 //   const insecureCredentials = credentials.createInsecure();
 //   const client = createConcordiumClient(
 //     "node.testnet.concordium.com",
@@ -201,7 +196,6 @@ const handleTransaction = async () => {
 //     );
 
 //     const status = await client.waitForTransactionFinalization(transactionHash);
-//     console.log(status, "status");
 
 //     return status;
 //   } catch (error) {
@@ -272,14 +266,12 @@ const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
         })
       ).sourceModule
     );
-    console.log(Schema.toJSON(), "Schema");
     const parameter2 = serializeUpdateContractParameters(
       d.contractName,
       "transfer",
       b,
       Schema
     );
-    console.log(parameter2, "parameter2");
 
     const tokenTransfer2 = {
       amount: new CcdAmount(BigInt(`0`), 6),
@@ -302,7 +294,6 @@ const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
       payload: tokenTransfer2,
       type: AccountTransactionType.Update,
     };
-    console.log(accountTransaction2, "accountTransaction2");
     const signature2 = await signTransaction(accountTransaction2, signer);
     const transactionHash2 = await client.sendAccountTransaction(
       accountTransaction2,
@@ -312,7 +303,6 @@ const handleTransactiontoken = async ({ a, b, c, _id, d }) => {
       transactionHash2
     );
 
-    console.log(status2, "status2");
 
     if (!status2.summary.rejectReason) {
       await LimitModel.updateOne({ _id }, { paid: true });
@@ -341,7 +331,6 @@ const transectiontokens = async (req, res) => {
     const status = await handleTransactiontoken(req.body);
     res.status(200).send({ status });
   } catch (error) {
-    // console.log(error);
   }
 };
 
@@ -396,7 +385,6 @@ const swapCcdToToken = async ({
   account,
 }) => {
   const { address, decimals, tokenId } = tokenData;
-  // console.log(decimals, "dsdwdedewe");
 
   return updateContract(
     provider,
@@ -469,7 +457,6 @@ const handleswap = async (req, res) => {
   // const privateKey = process.env.WALLET_PRIVATE_KEY;
   // try {
   //   const providerInstance = getProvider(privateKey);
-  //   console.log("Provider created:", providerInstance);
   // } catch (error) {
   //   console.error("Error creating provider:", error.message);
   // }
@@ -492,15 +479,7 @@ const handleswap = async (req, res) => {
   // const newprovider = JSON.parse(provider);
   const newprovider = JSON.stringify(provider, replacer, 2);
   // const newprovider = JSON.parse(provider);
-  // console.log(
-  //   amountFrom,
-  //   amountTo,
-  //   account,
-  //   newprovider,
-  //   tokenFrom,
-  //   tokenTo,
-  //   "Payload",
-  // );
+
   switch (true) {
     case Boolean(tokenFrom.address && !tokenTo.address):
       swapTokenToCcd({
@@ -569,8 +548,6 @@ async function createConcordiumClientfunc(req, res) {
 
       return value;
     });
-    // console.log(client, "client");
-    // console.log(jsonString, "stringobj");
     res.json({ jsonString });
   } catch (error) {
     return null;
@@ -620,8 +597,6 @@ async function transactionToWallet(req, res) {
     };
 
     const signer = buildAccountSigner(walletExport);
-    // console.log(accountTransaction, "accountTransaction");
-    // console.log(signer, "signer");
     const signature = await signTransaction(accountTransaction, signer);
 
     const transactionHash = await client.sendAccountTransaction(

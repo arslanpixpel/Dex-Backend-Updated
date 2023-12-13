@@ -32,13 +32,13 @@ mongoose
   // eslint-disable-next-line no-console
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => {
-    console.log("DB connection failed.", " error:", err);
+    console.error("DB connection failed.", " error:", err);
     process.exit(1);
   });
 
 // Error handling Middleware function for logging the error message
 const errorLogger = (error, req, res, next) => {
-  console.log("✔️ ➡️ file: server.js:41 ➡️ errorLogger ➡️ error:", error);
+  console.error("✔️ ➡️ file: server.js:41 ➡️ errorLogger ➡️ error:", error);
   next(error);
 };
 
