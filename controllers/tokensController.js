@@ -5,7 +5,7 @@ const LimitModel = require("../models/limitModel");
 
 const Token = require("../models/tokenModel");
 
-const findTokenData = async (contract) => {
+const findTokenData = async contract => {
   const { index, subindex, tokenId } = contract;
   const result = await Token.findOne({
     contractIndex: index,
@@ -16,7 +16,7 @@ const findTokenData = async (contract) => {
   return result;
 };
 
-const createJson = (token) => {
+const createJson = token => {
   const {
     _id,
     contractIndex,
@@ -30,9 +30,30 @@ const createJson = (token) => {
     id: _id,
     symbol: symbol || "",
     images: {
-      thumbnail: thumbnail || "",
-      display: display || "",
-      artifact: artifact || "",
+      thumbnail: thumbnail
+        ? {
+            url: thumbnail.url.replace(
+              "concordium-servernode.dev-site.space",
+              "api.pixpel.io",
+            ),
+          }
+        : "",
+      display: display
+        ? {
+            url: display.url.replace(
+              "concordium-servernode.dev-site.space",
+              "api.pixpel.io",
+            ),
+          }
+        : "",
+      artifact: artifact
+        ? {
+            url: artifact.url.replace(
+              "concordium-servernode.dev-site.space",
+              "api.pixpel.io",
+            ),
+          }
+        : "",
     },
     address: {
       index: contractIndex,
@@ -44,9 +65,9 @@ const createJson = (token) => {
   };
 };
 
-const isHEX = (string) => /^[0-9A-F]+$/i.test(string);
+const isHEX = string => /^[0-9A-F]+$/i.test(string);
 
-const validateContract = (contract) => {
+const validateContract = contract => {
   const { index, tokenId } = contract;
 
   switch (true) {
@@ -73,7 +94,7 @@ const validateContract = (contract) => {
   }
 };
 
-const isContractExistsInDB = async (contract) => {
+const isContractExistsInDB = async contract => {
   const result = await findTokenData(contract);
 
   if (result) {
@@ -133,7 +154,7 @@ const updateToken = async (contract, from = "") => {
           tokenId: contract.tokenId.toUpperCase(),
           contractName,
           metadata,
-        }
+        },
       );
     }
   } catch (error) {
@@ -150,7 +171,7 @@ const getAllTokensFromDB = async () => {
 const getTokens = async (req, res) => {
   try {
     const tokensData = await Token.find();
-    const response = tokensData.map((token) => createJson(token));
+    const response = tokensData.map(token => createJson(token));
     res.status(200).json({
       response,
     });
@@ -207,7 +228,7 @@ const postToken = async (req, res) => {
 
     if (!isTokenExists) {
       consoleHeader(
-        `Add contract!!! From: User is request to add new contract in DB`
+        `Add contract!!! From: User is request to add new contract in DB`,
       );
       console.dir(contract, { depth: null });
       await Token.create({
@@ -219,7 +240,7 @@ const postToken = async (req, res) => {
       });
     } else {
       consoleHeader(
-        `Update contract!!! From: User is request exist contract in DB`
+        `Update contract!!! From: User is request exist contract in DB`,
       );
       console.dir(contract, { depth: null });
       await Token.replaceOne(
@@ -234,7 +255,7 @@ const postToken = async (req, res) => {
           tokenId: contract.tokenId.toUpperCase(),
           contractName,
           metadata,
-        }
+        },
       );
 
       return res.status(400).json({
@@ -309,6 +330,7 @@ const getLimitOrdersbywallet = async (req, res) => {
     if (!walletAddress) {
       return res.status(400).json({ error: "Wallet address is required" });
     }
+
     const limitOrders = await LimitModel.find({ address: walletAddress });
     res.json(limitOrders);
   } catch (error) {
@@ -323,9 +345,9 @@ const compeleteLimitOrders = async (req, res) => {
   try {
     const limitOrders = await getLimitOrders();
     const filteredOrders = limitOrders.filter(
-      (order) =>
+      order =>
         order.tokenToindex === tokentoindex &&
-        order.tokenFromindex === tokenfromindex
+        order.tokenFromindex === tokenfromindex,
     );
 
     res.json({ requestBody: req.body, filteredOrders });
