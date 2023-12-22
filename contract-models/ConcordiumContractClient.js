@@ -119,11 +119,6 @@ function ensureValidOutcome(outcomes) {
     .find((s) => s.result.outcome === "success");
 
   if (!successTxnSummary) {
-    console.log(
-      `%c::${"outcomes"}`,
-      "background: #5ebaf2; color: #fff; border-radius: 5px; padding: 2px 5px;",
-      outcomes
-    );
     const failures = Object.keys(outcomes)
       .map((k) => outcomes[k])
       .filter((s) => s.result.outcome === "reject")
@@ -193,18 +188,18 @@ async function invokeContract(
           methodName
         );
 
-      console.log(
+      console.error(
         `%c::${"Deserialized error"}`,
         "background: #5ebaf2; color: #fff; border-radius: 5px; padding: 2px 5px;",
         errorData
       );
     } catch (error) {
-      console.log(
+      console.error(
         `%c::${"Deserialization error"}`,
         "background: #5ebaf2; color: #fff; border-radius: 5px; padding: 2px 5px;",
         error
       );
-      console.log(
+      console.error(
         `%c::${"Failure result"}`,
         "background: #5ebaf2; color: #fff; border-radius: 5px; padding: 2px 5px;",
         res
