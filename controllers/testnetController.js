@@ -1,4 +1,4 @@
-const FormSubmission = require("../models/FormSubmission");
+const FormSubmission = require("../models/formSubmission");
 
 exports.submitForm = async (req, res) => {
   const { email, username, walletAddress } = req.body;
