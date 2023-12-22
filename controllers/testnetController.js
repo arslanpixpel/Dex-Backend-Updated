@@ -16,3 +16,19 @@ exports.submitForm = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.getUserByUsername = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await FormSubmission.findOne({ username });
+
+    if (user) {
+      res.status(200).json({ success: true, user });
+    } else {
+      res.status(404).json({ success: false, message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
