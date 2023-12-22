@@ -7,6 +7,7 @@ const exchanges = require("./exchanges");
 const tokens = require("./tokens");
 const metadata = require("./metadata");
 const images = require("./images");
+const testnet = require("./testnet");
 
 router.use("/image", images);
 router.use("/lp-image", express.static("image"));
@@ -14,5 +15,6 @@ router.use("/chart-data", chartData);
 router.use("/exchanges", exchanges);
 router.use("/tokens", tokens);
 router.use("/metadata", metadata);
+router.use("/testnet", testnet);
 
 module.exports = router;
