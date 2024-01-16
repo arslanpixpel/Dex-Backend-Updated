@@ -200,17 +200,17 @@ const postToken = async (req, res) => {
 
   const metadataResult = await getMetadataLink(contract);
 
-  // if (!metadataResult.isValid) {
-  //   return res.status(400).json({
-  //     message: metadataResult.message,
-  //   });
-  // }
+  if (!metadataResult.isValid) {
+    return res.status(400).json({
+      message: metadataResult.message,
+    });
+  }
 
   const { link, contractName } = metadataResult;
 
   // if (!isLinkMatchTokenId(link, contract.tokenId)) {
   //   return res.status(400).json({
-  //     message: 'Not correct Token Id',
+  //     message: "Not correct Token Id",
   //   });
   // }
 
@@ -227,9 +227,9 @@ const postToken = async (req, res) => {
     const isTokenExists = await isContractExistsInDB(contract);
 
     if (!isTokenExists) {
-      consoleHeader(
-        `Add contract!!! From: User is request to add new contract in DB`
-      );
+      // consoleHeader(
+      //   `Add contract!!! From: User is request to add new contract in DB`
+      // );
       console.dir(contract, { depth: null });
       await Token.create({
         contractIndex: contract.index,
@@ -239,9 +239,9 @@ const postToken = async (req, res) => {
         metadata,
       });
     } else {
-      consoleHeader(
-        `Update contract!!! From: User is request exist contract in DB`
-      );
+      // consoleHeader(
+      //   `Update contract!!! From: User is request exist contract in DB`
+      // );
       console.dir(contract, { depth: null });
       await Token.replaceOne(
         {
@@ -257,7 +257,6 @@ const postToken = async (req, res) => {
           metadata,
         }
       );
-
       return res.status(400).json({
         message: "Contract is already exists in list",
       });
@@ -265,7 +264,8 @@ const postToken = async (req, res) => {
 
     const token = await findTokenData(contract);
     const response = createJson(token);
-
+    console.log(token, "token is");
+    console.log(response, "responce");
     return res.status(200).json({
       response,
     });
