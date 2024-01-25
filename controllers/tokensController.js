@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-syntax */
+const mongoose = require("mongoose");
 const { getMetadataLink, consoleHeader } = require("../concordium/helpers");
 const LimitModel = require("../models/limitModel");
-
 const Token = require("../models/tokenModel");
 
 const findTokenData = async (contract) => {
@@ -368,6 +368,31 @@ const hello = async (req, res) => {
   }
 };
 
+const refundLimitOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const objectId = new mongoose.Types.ObjectId(id);
+
+    console.log(objectId, "refund");
+
+    const updatedDocument = await LimitModel.findByIdAndUpdate(
+      objectId,
+      { $set: { refund: true } },
+      { new: true }
+    );
+
+    if (!updatedDocument) {
+      return res.status(404).json({ error: "Document not found" });
+    }
+
+    res.json(updatedDocument);
+  } catch (error) {
+    // console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   updateToken,
   getAllTokensFromDB,
@@ -379,4 +404,5 @@ module.exports = {
   compeleteLimitOrders,
   hello,
   getLimitOrdersbywallet,
+  refundLimitOrder,
 };
