@@ -59,9 +59,10 @@ function transferBack() {
             quantity: "1",
             is_insurance: true,
           };
+          console.log(parse);
           const parameter = serializeUpdateContractParameters(
             MARKET_NFT.contractName,
-            "transfer",
+            "transfer_back",
             parse,
             MARKET_NFT.schemaBuffer,
             SchemaVersion.V1
@@ -84,7 +85,7 @@ function transferBack() {
               index: 7923n,
               subindex: 0n,
             },
-            receiveName: "Market-NFT.transfer",
+            receiveName: "Market-NFT.transfer_back",
             message: parameter,
             maxContractExecutionEnergy: BigInt("100000"),
           };
