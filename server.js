@@ -2,7 +2,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const cron = require("node-cron");
 const cors = require("cors");
+const { transferBack } = require("./controllers/nftCronController");
 require("dotenv-flow").config({
   node_env: process.env.NODE_ENV || "development",
 });
@@ -61,6 +63,7 @@ const invalidPathHandler = (req, res, next) => {
   });
 };
 
+cron.schedule("0 * * * *", transferBack);
 app.use("/api/v1", routes);
 app.use(errorLogger);
 app.use(errorResponder);
