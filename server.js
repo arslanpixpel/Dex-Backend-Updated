@@ -63,7 +63,7 @@ const invalidPathHandler = (req, res, next) => {
   });
 };
 
-cron.schedule("0 * * * *", transferBack);
+cron.schedule("0 0 * * *", transferBack);
 app.use("/api/v1", routes);
 app.use(errorLogger);
 app.use(errorResponder);
