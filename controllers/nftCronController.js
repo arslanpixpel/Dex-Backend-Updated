@@ -41,10 +41,30 @@ async function transferBack() {
           val.insurance === true &&
           val.insurance_expirydate === formattedCurrentDate
       );
-      console.log(find, "DATA");
+      // console.log(find, "DATA");
+      function calculateHoursDifference(buyDate, expiryDate) {
+        const buyDateObj = new Date(buyDate);
+        const expiryDateObj = new Date(expiryDate);
+        const millisecondsDifference = expiryDateObj - buyDateObj;
+        const hoursDifference = millisecondsDifference / (1000 * 60 * 60);
+        return hoursDifference;
+      }
 
       for (const owner of find) {
         try {
+          const buyDate = owner.insurance_buydate;
+          const expirayDate = owner.insurance_expiraydate;
+          const estimatedHours = calculateHoursDifference(
+            owner.insurance_buydate,
+            owner.insurance_expirydate
+          );
+
+          // console.log("Estimated hours:", estimatedHours);
+          const estimatedAmount = Math.floor(
+            val.insurance_per_hour * 1000000 * -estimatedHours
+          );
+          console.log(estimatedAmount);
+
           const INDEX = parseInt(val?.contact_address || 7632);
           const walletFile = fs.readFileSync(
             "./4dgSpWaZf4Z5yDFE5hb6XpaioDv6kao7UF3wvZiMbFkynSdh1A.export",
@@ -58,7 +78,9 @@ async function transferBack() {
             nonce: nextNonce.nonce,
             sender,
           };
-          const ab = val.insurance_per_hour
+          const ab = estimatedHours
+            ? estimatedAmount
+            : val.insurance_per_hour
             ? val.insurance_per_hour * 1000000
             : 1;
           const parse = {
@@ -79,7 +101,7 @@ async function transferBack() {
             MARKET_NFT.schemaBuffer,
             SchemaVersion.V1
           );
-          console.log(parameter, "Parameter");
+          // console.log(parameter, "Parameter");
           const tokenTransfer = {
             amount: new CcdAmount(BigInt(ab)),
             address: {
@@ -88,18 +110,19 @@ async function transferBack() {
             },
             receiveName: "pixpel-nft-marketplace.transfer_back",
             message: parameter,
-            maxContractExecutionEnergy: BigInt("100000"),
+            maxContractExecutionEnergy: BigInt("1000000"),
           };
+          // console.log(tokenTransfer, "Token");
           const accountTransaction = {
             header,
             payload: tokenTransfer,
             type: AccountTransactionType.Update,
           };
-          console.log(accountTransaction, "ACCOUNT TRANSACTION");
+          // console.log(accountTransaction, "ACCOUNT TRANSACTION");
           const signer = buildAccountSigner(walletExport);
-          console.log(signer, "signature 1");
+          // console.log(signer, "signature 1");
           const signature = await signTransaction(accountTransaction, signer);
-          console.log(signature, "signature 2");
+          // console.log(signature, "signature 2");
 
           // Send transaction and wait for its completion before proceeding
           const transactionHash = await client.sendAccountTransaction(
