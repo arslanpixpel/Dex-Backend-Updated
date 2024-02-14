@@ -36,7 +36,6 @@ async function transferBack() {
       // const find = val.secondary_owner?.filter((val) => val.insurance === true);
       const currentDate = new Date();
       const formattedCurrentDate = currentDate.toISOString().slice(0, 10);
-      console.log(val, "Value");
 
       const find = val.secondary_owner?.filter(
         (val) =>
