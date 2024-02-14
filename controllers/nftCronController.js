@@ -30,18 +30,19 @@ async function transferBack() {
 
     const res = await axios.get("https://backend.pixpel.io/nfts/getAll");
     // console.log(res.data);
-    const data = res.data.data;
+    const data = res.data.data.filter((val) => val.blockchain === "Concordium");
 
     for (const val of data) {
       // const find = val.secondary_owner?.filter((val) => val.insurance === true);
       const currentDate = new Date();
       const formattedCurrentDate = currentDate.toISOString().slice(0, 10);
+      console.log(val, "Value");
+
       const find = val.secondary_owner?.filter(
         (val) =>
           val.insurance === true &&
           val.insurance_expirydate === formattedCurrentDate
       );
-      // console.log(find, "DATA");
       function calculateHoursDifference(buyDate, expiryDate) {
         const buyDateObj = new Date(buyDate);
         const expiryDateObj = new Date(expiryDate);
